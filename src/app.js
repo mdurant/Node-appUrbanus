@@ -3,6 +3,7 @@ const express = require('express');
 const logger = require('./utils/logger');
 const routes = require('./routes'); 
 const authRoutes = require('./routes/authRoutes');
+const serviceRequestRoutes = require('./routes/serviceRequestRoutes'); // Importa el router
 const { connectDB } = require('./config/db');
 const app = express();
 require('dotenv').config();
@@ -18,6 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 // Rutas
 app.use('/api', routes);
 app.use('/api/auth', authRoutes);
+app.use('/api', serviceRequestRoutes);
 
 
 // Configuración de puerto
