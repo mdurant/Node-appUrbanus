@@ -2,8 +2,11 @@
 const express = require('express');
 const logger = require('./utils/logger');
 const routes = require('./routes'); 
+const authRoutes = require('./routes/authRoutes');
 const { connectDB } = require('./config/db');
 const app = express();
+require('dotenv').config();
+
 
 // Inicia la conexión con la base de datos
 connectDB();
@@ -14,6 +17,8 @@ app.use(express.urlencoded({ extended: true }));
 
 // Rutas
 app.use('/api', routes);
+app.use('/api/auth', authRoutes);
+
 
 // Configuración de puerto
 const PORT = 3000;
