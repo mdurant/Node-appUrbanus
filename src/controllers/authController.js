@@ -9,6 +9,10 @@ const { addTokenToBlacklist } = require('../utils/tokenBlacklist');
 
 require('dotenv').config();
 
+const generateVerificationCode = () => {
+  return Math.random().toString(36).substring(2, 8).toUpperCase();
+};
+
 const generateToken = (user) => 
     jwt.sign({ id: user.id, name: user.name, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
@@ -19,16 +23,43 @@ const register = async (req, res) => {
 
   try {
     const user = await User.create({ name, email, password });
-    const verificationCode = crypto.randomBytes(3).toString('hex').toUpperCase();
+    const verificationCode = generateVerificationCode();
 
     // Guardar el código y la fecha límite de expiración en la base de datos o caché
     // Enviar email
     await transporter.sendMail({
-        from: '"App Urbanus" <no-reply@urbanus.com>',
-        to: user.email,
-        subject: 'Código de verificación de cuenta',
-        text: `Su código de verificación es ${verificationCode}. Este código expira en 12 horas.`,
-      });
+      from: '"App Urbanus" <no-reply@urbanus.com>',
+      to: user.email,
+      subject: 'Código de verificación de cuenta',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
+          <div style="text-align: center;">
+            <img src="https://yourdomain.com/logo.png" alt="Logo" style="width: 120px; margin-bottom: 20px;">
+            <h2 style="color: #4CAF50; font-size: 24px; font-weight: bold;">Código de Validación</h2>
+          </div>
+          <p>Estimado Cliente,</p>
+          <p>Te enviamos el <strong>código de validación</strong> para tu cuenta:</p>
+          <div style="text-align: center; font-size: 24px; font-weight: bold; background-color: #f4f4f4; padding: 10px; border-radius: 5px; color: #333;">
+            ${verificationCode}
+          </div>
+          <p>Deberás ingresar este <strong>código</strong> cuando te lo soliciten y continuar con el proceso.</p>
+          <br>
+          <div style="border-top: 1px solid #ddd; padding-top: 10px; font-size: 12px; color: #555;">
+            <p><strong>Consejos de Seguridad:</strong></p>
+            <ul>
+              <li>Nunca abra ni descargue archivos de remitentes desconocidos, ni facilite sus datos personales.</li>
+              <li>Nunca use la opción “guardar contraseña” en las pantallas iniciales de sitios de internet.</li>
+            </ul>
+            <p style="font-size: 11px; color: #999;">
+              Por favor agradecemos No Contestar a esta casilla. Si requiere efectuar consultas, solicitudes, corregir errores en el envío o en sus datos, contáctenos directamente en nuestro sitio <a href="https://www.urbanus.cl" style="color: #4CAF50;">www.urbanus.cl</a>.
+            </p>
+            <p style="font-size: 11px; color: #999;">
+              Este correo electrónico fue enviado a través de MasterBase® por Urbanus Spa. Dirección: Santiago • Santiago Chile.
+            </p>
+          </div>
+        </div>
+      `,
+    });
 
     logger.info('Usuario registrado y correo de verificación enviado.');
     res.status(201).json({ message: 'Usuario registrado. Revise su correo electrónico para verificarlo.' });
