@@ -35,4 +35,29 @@ const createServiceRequest = async (req, res) => {
   }
 };
 
-module.exports = { createServiceRequest };
+// Listar todos los requerimientos de servicio Status: completed and step_pending: null
+const listServiceRequests = async (req, res) => {
+  try {
+        // Buscar Service Requests con status "Completed" y "step_pending" nulo
+        const serviceRequests = await ServiceRequest.findAll({
+          where: {
+            status: 'Completed',
+            step_pending: null
+          }
+        });
+        const serviceRequestTotal = serviceRequests.length; //Contar solo los requerimientos de servicio completados
+    logger.info('Requerimientos de servicio listados exitosamente.');
+    res.status(200).json({
+      code: 200,
+      serviceRequest_total: serviceRequestTotal,
+      serviceRequests
+    });
+  } catch (error) {
+    logger.error(`Error al listar los requerimientos de servicio: ${error.message}`);
+    res.status(500).json({ 
+      code: 500,
+      message: 'Error interno del servidor' });
+  }
+};
+
+module.exports = { createServiceRequest, listServiceRequests };
