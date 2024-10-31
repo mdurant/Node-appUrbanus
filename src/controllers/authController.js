@@ -19,7 +19,9 @@ const generateToken = (user) =>
 const register = async (req, res) => {
   const { name, email, password } = req.body;
 
-  if (!email || !password) return res.status(400).json({ message: 'Email y contraseña son obligatorios' });
+  if (!email || !password) return res.status(400).json({ 
+    code: 400,
+    message: 'Email y contraseña son obligatorios' });
 
   try {
     const user = await User.create({ name, email, password });
@@ -62,10 +64,15 @@ const register = async (req, res) => {
     });
 
     logger.info('Usuario registrado y correo de verificación enviado.');
-    res.status(201).json({ message: 'Usuario registrado. Revise su correo electrónico para verificarlo.' });
+    res.status(201).json({ 
+      code: 201,
+      message: 'Usuario registrado. Revise su correo electrónico para verificarlo.'
+     });
   } catch (error) {
     logger.error(`Error al registrar usuario: ${error.message}`);
-    res.status(500).json({ message: 'Error interno del servidor' });
+    res.status(500).json({ 
+      code: 500,
+      message: 'Error interno del servidor' });
   }
 };
 
@@ -73,7 +80,10 @@ const verifyEmail = async (req, res) => {
   const { email, verificationCode } = req.body;
 
   // Lógica para verificar el código, la expiración y activar el email
-  res.status(200).json({ message: 'Correo verificado correctamente' });
+  res.status(200).json({
+    code: 200,
+    message: 'Correo verificado correctamente' 
+  });
 };
 
 const login = async (req, res) => {
@@ -82,14 +92,19 @@ const login = async (req, res) => {
   try {
     const user = await User.findOne({ where: { email } });
     if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res.status(400).json({ message: 'Credenciales incorrectas' });
+      return res.status(400).json({ 
+        code: 400,
+        message: 'Credenciales incorrectas' 
+      });
     }
 
     const token = generateToken(user);
     res.status(200).json({ token });
   } catch (error) {
     logger.error(`Error al iniciar sesión: ${error.message}`);
-    res.status(500).json({ message: 'Error interno del servidor' });
+    res.status(500).json({ 
+      code: 500,
+      message: 'Error interno del servidor' });
   }
 };
 
@@ -99,15 +114,23 @@ const logout = (req, res) => {
   // Agrega el token a la lista de bloqueo
   if (token) {
     addTokenToBlacklist(token);
-    return res.status(200).json({ message: 'Usuario desconectado correctamente', logoutAt: new Date() });
+    return res.status(200).json({ 
+      code: 200,
+      message: 'Usuario desconectado correctamente', logoutAt: new Date() });
   }
 
-  res.status(400).json({ message: 'Token no provisto' });
+  res.status(400).json({ 
+    code: 400,
+    message: 'Token no provisto' 
+  });
 };
 
 const userInfo = async (req, res) => {
   const user = req.user;
-  res.status(200).json({ user });
+  res.status(200).json({ 
+    code: 200,
+    user 
+  });
 };
 
 module.exports = { register, verifyEmail, login, logout, userInfo };

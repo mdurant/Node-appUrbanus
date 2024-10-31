@@ -36,6 +36,11 @@ const User = sequelize.define('User', {
       isAlphanumeric: true,
     },
   },
+  role: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: 'USER',
+  },
 }, {
   timestamps: true,
   hooks: {

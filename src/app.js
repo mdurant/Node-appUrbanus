@@ -3,7 +3,9 @@ const express = require('express');
 const logger = require('./utils/logger');
 const routes = require('./routes'); 
 const authRoutes = require('./routes/authRoutes');
-const serviceRequestRoutes = require('./routes/serviceRequestRoutes'); // Importa el router
+const serviceRequestRoutes = require('./routes/serviceRequestRoutes');
+const offerRoutes = require('./routes/offerRoutes');
+
 const { connectDB } = require('./config/db');
 const app = express();
 require('dotenv').config();
@@ -20,6 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api', routes);
 app.use('/api/auth', authRoutes);
 app.use('/api', serviceRequestRoutes);
+app.use('/api', offerRoutes); // Agrega el router al path /offerRoutes
 
 
 // Configuración de puerto
