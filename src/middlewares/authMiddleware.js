@@ -4,7 +4,7 @@ const logger = require('../utils/logger');
 const { isTokenBlacklisted } = require('../utils/tokenBlacklist');
 
 
-require('dotenv').config();
+process.loadEnvFile(); // Cargar las variables de entorno
 
 const authMiddleware = async (req, res, next) => {
   const token = req.headers.authorization?.split(' ')[1];

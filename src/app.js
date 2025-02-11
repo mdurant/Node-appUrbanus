@@ -8,7 +8,7 @@ const walletRoutes = require('./routes/walletRoutes');
 
 const { connectDB } = require('./config/db');
 const app = express();
-require('dotenv').config();
+process.loadEnvFile();
 
 // Inicia la conexión con la base de datos
 connectDB();
@@ -28,6 +28,10 @@ const PORT = process.env.PORT || 3000;
 // Iniciar el servidor
 app.listen(PORT, () => {
   logger.info(`Servidor escuchando en el puerto ${PORT}`);
+  logger.info(`Entorno de ejecución: ${process.env.NODE_ENV}`);
+  logger.info(`Nombre de Base de datos conectada es: ${process.env.DB_DATABASE}`);
+  logger.info(`Dialect SQL es : ${process.env.DB_DIALECT}`);
+  logger.info(`Nombre de APP es : ${process.env.NAME_APP}`);
 });
 
 

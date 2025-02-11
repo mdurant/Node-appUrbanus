@@ -1,13 +1,12 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const crypto = require('crypto');
 const transporter = require('../config/mailer');
 const logger = require('../utils/logger');
 const { addTokenToBlacklist } = require('../utils/tokenBlacklist');
 
 
-require('dotenv').config();
+process.loadEnvFile(); // Cargar las variables de entorno
 
 const generateVerificationCode = () => {
   return Math.random().toString(36).substring(2, 8).toUpperCase();
