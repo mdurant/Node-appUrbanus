@@ -62,6 +62,7 @@ Actualmente, la plataforma integra módulos de:
     ```bash
     npm run db:migrate
 (Dependiendo de la configuración de Sequelize o scripts custom.)
+
 7. **Inicia la aplicación, ejemplo: Ambiente DEV**
     ```bash
     npm run dev
@@ -94,7 +95,7 @@ Actualmente, la plataforma integra módulos de:
 
 ---
 
-## Contribución
+## Tips
 1. Haz un **fork** del repositorio.  
 2. Crea una **rama** para tu feature/fix.  
 3. Haz **commit** de tus cambios con mensajes descriptivos.  
@@ -104,14 +105,15 @@ Actualmente, la plataforma integra módulos de:
 ---
 
 ## Autor
-Desarrollado por **Mauricio Durán – Líder TI – Integraltech Chile**
+## Desarrollado por:
+**Mauricio Durán – Líder TI – Integraltech Chile**
 
 Si tienes dudas o sugerencias, no dudes en contactarnos o abrir un issue.
 
 ---
 
 ## Licencia
-Proyecto cerrado para uso interno de la organización. Para consultas de licenciamiento, contactar al equipo de soporte de **Integraltech Chile**.
+Proyecto cerrado para uso interno de la organización. En temas de licenciamiento este proyecto está con "Licencia MIT", ante dudas y soporte con contactar al equipo de soporte de **Integraltech Chile**. mauricio@integraltech.cl
 
 ## Estructura del Proyecto
 
