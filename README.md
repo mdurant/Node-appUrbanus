@@ -33,25 +33,6 @@ Actualmente, la plataforma integra módulos de:
 
 ---
 
-## Estructura del Proyecto
-
-
-```bash
-├─ src/
-│  ├─ certs/         # Certificados SSL (server.key, server.crt, ca.crt)
-│  ├─ config/        # Configuración de DB, mailer, etc.
-│  ├─ controllers/   # Controladores de cada módulo (auth, offers, etc.)
-│  ├─ middlewares/   # Middlewares de validación y seguridad
-│  ├─ models/        # Definición de modelos (Sequelize)
-│  ├─ routes/        # Endpoints de la aplicación (authRoutes, offersRoutes, etc.)
-│  ├─ utils/         # Utilidades y helpers (logger, tokenBlacklist, etc.)
-│  ├─ app.js         # Configuración y arranque del servidor (mTLS, Express)
-│  └─ ...
-├─ package.json
-├─ .env.example
-└─ ...
-
-
 ## Configuración e Instalación
 
 1. **Clona** este repositorio:
@@ -131,3 +112,24 @@ Si tienes dudas o sugerencias, no dudes en contactarnos o abrir un issue.
 
 ## Licencia
 Proyecto cerrado para uso interno de la organización. Para consultas de licenciamiento, contactar al equipo de soporte de **Integraltech Chile**.
+
+## Estructura del Proyecto
+
+
+```bash
+├─ src/
+│  ├─ certs/         # Certificados SSL (server.key, server.crt, ca.crt)
+│  ├─ config/        # Configuración de DB, mailer, etc.
+│  ├─ controllers/   # Controladores de cada módulo (auth, offers, etc.)
+│  ├─ middlewares/   # Middlewares de validación y seguridad
+│  ├─ models/        # Definición de modelos (Sequelize)
+│  ├─ routes/        # Endpoints de la aplicación (authRoutes, offersRoutes, etc.)
+│  ├─ utils/         # Utilidades y helpers (logger, tokenBlacklist, etc.)
+│  ├─ app.js         # Configuración y arranque del servidor (mTLS, Express)
+│  └─ ...
+├─ package.json
+├─ .env.example
+└─ ...
+
+---
+
