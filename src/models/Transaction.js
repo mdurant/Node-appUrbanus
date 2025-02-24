@@ -1,5 +1,7 @@
 // src/models/Transaction.js
 const { Model, DataTypes, UUIDV4 } = require('sequelize');
+const { v4: uuidv4 } = require('uuid');
+const Wallet = require('./Wallet');
 const sequelize = require('../config/db').sequelize;
 
 class Transaction extends Model {}
@@ -36,6 +38,7 @@ Transaction.init({
     defaultValue: DataTypes.NOW,
   },
 }, {
+  sequelize,            // <--- aquí debes indicar la instancia
   modelName: 'transaction',
   tableName: 'transactions',
   timestamps: true,

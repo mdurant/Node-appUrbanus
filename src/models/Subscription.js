@@ -1,5 +1,7 @@
 // src/models/Subscription.js
 const { Model, DataTypes, UUIDV4 } = require('sequelize');
+const User = require('./User');
+const Plan = require('./Plan');
 const sequelize = require('../config/db').sequelize;
 
 class Subscription extends Model {}

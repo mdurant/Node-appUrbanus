@@ -1,5 +1,6 @@
 // src/models/WalletBalance.js
 const { Model, DataTypes, UUIDV4 } = require('sequelize');
+const Wallet = require('./Wallet');
 const sequelize = require('../config/db').sequelize;
 
 class WalletBalance extends Model {}
@@ -7,7 +8,7 @@ class WalletBalance extends Model {}
 WalletBalance.init({
   id: {
     type: DataTypes.UUID,
-    defaultValue: uuidv4,
+    defaultValue: UUIDV4,
     primaryKey: true,
   },
   wallet_id: {
@@ -23,6 +24,7 @@ WalletBalance.init({
     defaultValue: 0.0,
   },
 }, {
+  sequelize,
   modelName: 'WalletBalance',
   tableName: 'wallet_balances',
   timestamps: true,

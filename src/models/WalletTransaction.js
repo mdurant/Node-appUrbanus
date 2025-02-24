@@ -1,6 +1,7 @@
 // src/models/WalletTransaction.js
 const { Model, DataTypes, UUIDV4 } = require('sequelize');
 const sequelize = require('../config/db').sequelize;
+const Wallet = require('./Wallet');
 const crypto = require('crypto');
 
 class WalletTransaction extends Model {}
@@ -8,7 +9,7 @@ class WalletTransaction extends Model {}
 WalletTransaction.init({
   id: {
     type: DataTypes.UUID,
-    defaultValue: uuidv4,
+    defaultValue: UUIDV4,
     primaryKey: true,
   },
   wallet_id: {
