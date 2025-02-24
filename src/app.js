@@ -5,6 +5,24 @@ const authRoutes = require('./routes/authRoutes');
 const serviceRequestRoutes = require('./routes/serviceRequestRoutes');
 const offerRoutes = require('./routes/offerRoutes');
 const walletRoutes = require('./routes/walletRoutes'); 
+//Certificate
+const https = require('https');
+const fs = require('fs');
+const path = require('path');
+
+// Cargar llaves y certificados
+const privateKey = fs.readFileSync(path.resolve(__dirname, 'certs/server.key'), 'utf8');
+const certificate = fs.readFileSync(path.resolve(__dirname, 'certs/server.crt'), 'utf8');
+const caCertificate = fs.readFileSync(path.resolve(__dirname, 'certs/ca.crt'), 'utf8');
+
+// Opciones para mTLS
+const options = {
+  key: privateKey,
+  cert: certificate,
+  ca: [caCertificate],  // La CA que firmó clientes
+  requestCert: true,    // Solicitar certificado al cliente
+  rejectUnauthorized: true // Rechazar conexiones si el cliente no envía un certificado válido
+};
 
 const { connectDB } = require('./config/db');
 const app = express();
@@ -23,15 +41,11 @@ app.use('/api/service-requests', serviceRequestRoutes);
 app.use('/api/offers', offerRoutes);
 app.use('/api/wallet', walletRoutes);
 // Configuración de puerto
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3443;
 
-// Iniciar el servidor
-app.listen(PORT, () => {
-  logger.info(`Servidor escuchando en el puerto ${PORT}`);
-  logger.info(`Entorno de ejecución: ${process.env.NODE_ENV}`);
-  logger.info(`Nombre de Base de datos conectada es: ${process.env.DB_DATABASE}`);
-  logger.info(`Dialect SQL es : ${process.env.DB_DIALECT}`);
-  logger.info(`Nombre de APP es : ${process.env.NAME_APP}`);
+// Levantar servidor HTTPS con las opciones mTLS
+https.createServer(options, app).listen(PORT, () => {
+  logger.info('Servidor mTLS escuchando en https://localhost:3443');
 });
 
 
