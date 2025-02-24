@@ -8,40 +8,52 @@ class WalletTransaction extends Model {}
 WalletTransaction.init({
   id: {
     type: DataTypes.UUID,
-    defaultValue: UUIDV4,
+    defaultValue: uuidv4,
     primaryKey: true,
   },
-  transaction_id: {
-    type: DataTypes.STRING,
+  wallet_id: {
+    type: DataTypes.UUID,
     allowNull: false,
-    unique: true,
-    defaultValue: () => crypto.randomBytes(8).toString('hex'), // Genera un ID único
+  },
+  currency: {
+    type: DataTypes.ENUM('CLP', 'USD'),
+    allowNull: false,
+  },
+  transaction_type: {
+    type: DataTypes.ENUM('add', 'subtract'),
+    allowNull: false,
   },
   amount: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.DECIMAL(10, 2),
     allowNull: false,
   },
-  type: {
-    type: DataTypes.STRING,
+  balance_after_transaction: {
+    type: DataTypes.DECIMAL(10, 2),
     allowNull: false,
   },
   description: {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  wallet_id: {
-    type: DataTypes.UUID,
-    allowNull: false,
+  transaction_date: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
   },
-  user_id: {
-    type: DataTypes.UUID,
-    allowNull: false,
+  ip_of_transaction: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  transaction_browser: {
+    type: DataTypes.STRING,
+    allowNull: true,
   },
 }, {
   sequelize,
   modelName: 'WalletTransaction',
-  tableName: 'WalletTransactions',
+  tableName: 'wallet_transactions',
   timestamps: true,
 });
+
+WalletTransaction.belongsTo(Wallet, { foreignKey: 'wallet_id' });
 
 module.exports = WalletTransaction;

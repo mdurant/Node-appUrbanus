@@ -4,48 +4,28 @@ const {
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class WalletTransaction extends Model {
-
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
     static associate(models) {
       // define association here
     }
   }
   WalletTransaction.init({
-    id: {
-      type: DataTypes.UUID,
-      defaultValue: UUIDV4,
-      primaryKey: true,
-    },
-    transaction_id: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-      defaultValue: () => crypto.randomBytes(8).toString('hex'), // Genera un ID único
-    },
-    amount: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    type: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    description: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    wallet_id: {
-      type: DataTypes.UUID,
-      allowNull: false,
-    },
-    user_id: {
-      type: DataTypes.UUID,
-      allowNull: false,
-    },
+    wallet_id: DataTypes.UUID,
+    currency: DataTypes.STRING,
+    transaction_type: DataTypes.STRING,
+    amount: DataTypes.DECIMAL,
+    balance_after_transaction: DataTypes.DECIMAL,
+    description: DataTypes.STRING,
+    transaction_date: DataTypes.DATE,
+    ip_of_transaction: DataTypes.STRING,
+    transaction_browser: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'WalletTransaction',
-    tableName: 'WalletTransactions',
-    timestamps: true,
   });
   return WalletTransaction;
 };
