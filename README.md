@@ -47,14 +47,14 @@ Actualmente, la plataforma integra módulos de:
     npm install
 4. **Configura tu archivo ENV**
     ```bash
-DB_HOST=localhost
-DB_PORT=3306
-DB_DATABASE=urbanus_db
-DB_USERNAME=admin
-DB_PASSWORD=secret
-DB_DIALECT=mysql
-JWT_SECRET=supersecret
-PORT=3443
+    DB_HOST=localhost
+    DB_PORT=3306
+    DB_DATABASE=urbanus_db
+    DB_USERNAME=admin
+    DB_PASSWORD=secret
+    DB_DIALECT=mysql
+    JWT_SECRET=supersecret
+    PORT=3443
 5. **Configura tus certificados mTLS (opcional/ si requieres integraciones seguras):**
 - Copia tus llaves y certificados (server.key, server.crt, ca.crt) en src/certs/.
 - Ajusta app.js según tu ruta de certificados.
