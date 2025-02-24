@@ -6,6 +6,8 @@ const serviceRequestRoutes = require('./routes/serviceRequestRoutes');
 const offerRoutes = require('./routes/offerRoutes');
 const walletRoutes = require('./routes/walletRoutes'); 
 const subscriptionRoutes = require('./routes/subscriptionRoutes');
+const serviceRoutes = require('./routes/serviceRoutes');
+
 
 const { connectDB } = require('./config/db');
 const app = express();
@@ -29,6 +31,7 @@ app.use('/api/service-requests', serviceRequestRoutes);
 app.use('/api/offers', offerRoutes);
 app.use('/api/wallet', walletRoutes);
 app.use('/api/subscriptions', subscriptionRoutes);
+app.use('/api/services', serviceRoutes);
 
 // Configuración de puerto
 const PORT = process.env.PORT || 3000;
@@ -41,6 +44,8 @@ app.listen(PORT, () => {
   logger.info(`Dialect SQL es : ${process.env.DB_DIALECT}`);
   logger.info(`Nombre de APP es : ${process.env.NAME_APP}`);
   logger.info(`URL de APP es : ${process.env.URL_APP}/api`);
+  //console.log('Service es:', Service);
+
 });
 
 
