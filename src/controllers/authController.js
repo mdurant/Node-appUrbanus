@@ -55,7 +55,7 @@ const register = async (req, res) => {
               Por favor agradecemos No Contestar a esta casilla. Si requiere efectuar consultas, solicitudes, corregir errores en el envío o en sus datos, contáctenos directamente en nuestro sitio <a href="https://www.urbanus.cl" style="color: #4CAF50;">www.urbanus.cl</a>.
             </p>
             <p style="font-size: 11px; color: #999;">
-              Este correo electrónico fue enviado a través de MasterBase® por Urbanus Spa. Dirección: Santiago • Santiago Chile.
+              Este correo electrónico fue enviado a través de un sistema automatizado por Integraltech Spa Dirección: Santiago • Santiago Chile.
             </p>
           </div>
         </div>
