@@ -7,6 +7,8 @@ const offerRoutes = require('./routes/offerRoutes');
 const walletRoutes = require('./routes/walletRoutes'); 
 const subscriptionRoutes = require('./routes/subscriptionRoutes');
 const serviceRoutes = require('./routes/serviceRoutes');
+const apiKeyRoutes = require('./routes/apiKeyRoutes');
+
 
 
 const { connectDB } = require('./config/db');
@@ -32,6 +34,7 @@ app.use('/api/offers', offerRoutes);
 app.use('/api/wallet', walletRoutes);
 app.use('/api/subscriptions', subscriptionRoutes);
 app.use('/api/services', serviceRoutes);
+app.use('/api/apikeys', apiKeyRoutes);
 
 // Configuración de puerto
 const PORT = process.env.PORT || 3000;
