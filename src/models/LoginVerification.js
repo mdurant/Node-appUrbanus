@@ -2,6 +2,7 @@
 const { Model, DataTypes, UUIDV4 } = require('sequelize');
 const sequelize = require('../config/db').sequelize;
 const User = require('./User');
+const moment = require('moment-timezone');
 
 class LoginVerification extends Model {}
 
@@ -31,11 +32,30 @@ LoginVerification.init({
   expiresAt: {
     type: DataTypes.DATE,
     allowNull: false,
+    defaultValue: () => moment().tz('America/Santiago').add(1, 'hour').toDate(), // 🔹 Expira en 1 hora (Chile)
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    get() {
+      return moment(this.getDataValue('createdAt'))
+        .tz('America/Santiago')
+        .format();
+    },
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    get() {
+      return moment(this.getDataValue('updatedAt'))
+        .tz('America/Santiago')
+        .format();
+    },
   },
 }, {
   sequelize,
   modelName: 'LoginVerification',
-  tableName: 'login_verifications',
+  tableName: 'LoginVerifications',
   timestamps: true,
 });
 
