@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const LoginVerification = require('../models/LoginVerification'); // Modelo de OTP
+const PasswordResetToken = require('../models/PasswordResetToken');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { Op } = require('sequelize');
@@ -7,8 +8,14 @@ const transporter = require('../config/mailer');
 const logger = require('../utils/logger');
 const { addTokenToBlacklist } = require('../utils/tokenBlacklist');
 const moment = require('moment-timezone');
+const crypto = require('crypto');
 
 process.loadEnvFile(); // Cargar variables de entorno
+
+// 🔹 Expresión regular para validar la contraseña (mínimo 8 caracteres, al menos una letra y un número)
+const isValidPassword = (password) => {
+  return /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]{8,}$/.test(password);
+};
 
 const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString(); // Código de 6 dígitos
 const OTP_EXPIRY = process.env.VERIFICATION_EXPIRY || 300; // 5 minutos (300 seg)
@@ -22,6 +29,14 @@ const register = async (req, res) => {
   const { name, email, password } = req.body;
 
   if (!email || !password) return res.status(400).json({ code: 400, message: 'Email y contraseña son obligatorios' });
+
+  // 🔹 Validar la contraseña
+  if (!isValidPassword(password)) {
+    return res.status(400).json({
+      code: 400,
+      message: 'La contraseña debe tener al menos 8 caracteres, una letra y un número.',
+    });
+  }
 
   try {
     const user = await User.create({ 
@@ -218,6 +233,90 @@ const login = async (req, res) => {
   }
 };
 
+/** 🔹 Solicitar restablecimiento de contraseña */
+const requestPasswordReset = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({ where: { email } });
+    if (!user) return res.status(400).json({ code: 400, message: 'No se encontró una cuenta con este correo electrónico.' });
+
+    // Generar token seguro de 32 caracteres
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const expiresAt = moment().add(60, 'minutes').toDate(); // Expira en 60 min
+
+    // Revocar tokens anteriores si existen
+    await PasswordResetToken.destroy({ where: { userId: user.id } });
+
+    // Guardar nuevo token
+    await PasswordResetToken.create({ userId: user.id, token: resetToken, expiresAt });
+
+    // Enviar email con enlace
+    const resetLink = `${process.env.URL_APP}/reset-password?token=${resetToken}`;
+    
+    await transporter.sendMail({
+      from: '"Urbanus" <no-reply@urbanus.com>',
+      to: user.email,
+      subject: 'Restablecimiento de Contraseña - Urbanus',
+      html: `
+        <p>Hola ${user.name},</p>
+        <p>Está recibiendo este correo porque hemos recibido una solicitud de restablecimiento de contraseña para su cuenta.</p>
+        <p><a href="${resetLink}" style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Restablecer Contraseña</a></p>
+        <p>Este enlace de restablecimiento de contraseña caducará en 60 minutos.</p>
+        <p>Si no has solicitado un restablecimiento de contraseña, no es necesario que hagas nada más.</p>
+        <br>
+        <p>Saludos,<br>Urbanus</p>
+      `,
+    });
+
+    logger.info(`Correo de restablecimiento enviado a ${user.email}`);
+    res.status(200).json({ code: 200, message: 'Correo de restablecimiento enviado.' });
+
+  } catch (error) {
+    logger.error(`Error en solicitud de restablecimiento: ${error.message}`);
+    res.status(500).json({ code: 500, message: 'Error interno del servidor' });
+  }
+};
+
+/** 🔹 Restablecer contraseña */
+const resetPassword = async (req, res) => {
+  const { token, newPassword } = req.body;
+
+  try {
+    const resetToken = await PasswordResetToken.findOne({ 
+      where: { token, expiresAt: { [Op.gt]: new Date() } }
+    });
+
+    if (!resetToken) return res.status(400).json({ code: 400, message: 'Token inválido o expirado.' });
+
+    // Buscar usuario
+    const user = await User.findByPk(resetToken.userId);
+    if (!user) return res.status(400).json({ code: 400, message: 'Usuario no encontrado.' });
+
+    // 🔹 Validar la nueva contraseña
+    if (!isValidPassword(newPassword)) {
+      return res.status(400).json({
+        code: 400,
+        message: 'La nueva contraseña debe tener al menos 8 caracteres, una letra y un número.',
+      });
+    }
+    
+    // Hashear nueva contraseña
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await user.update({ password: hashedPassword }, { validate: false });
+
+
+    // Eliminar token usado
+    await resetToken.destroy();
+
+    logger.info(`Contraseña restablecida para el usuario ${user.email}`);
+    res.status(200).json({ code: 200, message: 'Contraseña restablecida con éxito.' });
+
+  } catch (error) {
+    logger.error(`Error al restablecer contraseña: ${error.message}`);
+    res.status(500).json({ code: 500, message: 'Error interno del servidor' });
+  }
+};
 
 /** 🔹 Cerrar sesión */
 const logout = (req, res) => {
@@ -241,6 +340,8 @@ module.exports = {
   verifyEmail, 
   login, 
   verifyLogin, 
+  requestPasswordReset,
+  resetPassword,
   logout, 
   userInfo 
 };

@@ -31,7 +31,7 @@ PasswordResetToken.init({
 }, {
   sequelize,
   modelName: 'PasswordResetToken',
-  tableName: 'password_reset_tokens',
+  tableName: 'PasswordResetTokens',
   timestamps: true,
 });
 

@@ -10,6 +10,8 @@ router.post('/register', authController.register);
 router.post('/verify-email', authController.verifyEmail);
 router.post('/verify-login', authController.verifyLogin);
 router.post('/login', authController.login);
+router.post('/password-reset', authController.requestPasswordReset);
+router.post('/password-reset/confirm', authController.resetPassword);
 router.post('/logout', authMiddleware, authController.logout);
 router.get('/user-info', authMiddleware, authController.userInfo);
 
