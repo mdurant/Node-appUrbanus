@@ -10,7 +10,6 @@ const serviceRoutes = require('./routes/serviceRoutes');
 const apiKeyRoutes = require('./routes/apiKeyRoutes');
 
 
-
 const { connectDB } = require('./config/db');
 const app = express();
 process.loadEnvFile(); // Carga las variables de entorno

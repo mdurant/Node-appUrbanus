@@ -1,6 +1,17 @@
-// seeder/seedServices.js
-const Service = require('../src/models/Service');
-const { generateSlug } = require('../src/utils/slugUtils');
+'use strict';
+
+// Función para generar slug (copiada de utils/slugUtils.js)
+function generateSlug(name) {
+  // pasar a minúsculas
+  let slug = name.toLowerCase();
+  // quitar tildes
+  slug = slug.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  // reemplazar espacios por "-"
+  slug = slug.replace(/\s+/g, '-');
+  // quitar caracteres no deseados
+  slug = slug.replace(/[^\w-]+/g, '');
+  return slug;
+}
 
 const servicesData = [
   {
@@ -131,8 +142,20 @@ const servicesData = [
   }
 ];
 
-async function seedServices() {
-  try {
+module.exports = {
+  async up(queryInterface, Sequelize) {
+    // Cargar variables de entorno
+    process.loadEnvFile();
+    
+    // Inicializar conexión a la base de datos
+    const { sequelize } = require('../src/config/db');
+    const Service = require('../src/models/Service');
+    
+    try {
+      // Verificar conexión
+      await sequelize.authenticate();
+      
+      // Insertar servicios
     for (const s of servicesData) {
       const slug = generateSlug(s.name);
       await Service.create({
@@ -142,12 +165,33 @@ async function seedServices() {
         tasks: s.tasks
       });
     }
-    console.log('Servicios insertados exitosamente.');
+      
+      console.log('✅ Servicios insertados exitosamente.');
+    } catch (err) {
+      console.error('❌ Error al insertar servicios:', err.message);
+      throw err;
+    }
+  },
+
+  async down(queryInterface, Sequelize) {
+    // Cargar variables de entorno
+    process.loadEnvFile();
+    
+    // Inicializar conexión a la base de datos
+    const { sequelize } = require('../src/config/db');
+    const Service = require('../src/models/Service');
+    
+    try {
+      // Eliminar todos los servicios
+      await Service.destroy({
+        where: {},
+        truncate: true
+      });
+      
+      console.log('✅ Servicios eliminados exitosamente.');
   } catch (err) {
-    console.error('Error al insertar servicios:', err.message);
-  } finally {
-    process.exit(0);
+      console.error('❌ Error al eliminar servicios:', err.message);
+      throw err;
   }
 }
-
-seedServices();
+};

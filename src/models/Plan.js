@@ -13,6 +13,7 @@ Plan.init({
   plan_name: {
     type: DataTypes.STRING, // "Anual", "Semestral", "Mensual", etc.
     allowNull: false,
+    unique: true, // Necesario para la foreign key en Subscriptions
   },
   currency: {
     type: DataTypes.STRING, // "CLP", "USD", etc.
